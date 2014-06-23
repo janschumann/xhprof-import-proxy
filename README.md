@@ -12,16 +12,16 @@ application just have to send the data and will get a 202 Accepted status immedi
 Installation
 ------------
 
-´´´
+```
 go build -o bin/xhprof-import-proxy -a -i main
-´´´
+```
 
 Copy import.php to xhprof.io install path.
 
 Start the server
 ----------------
 
-´´´
+```
 bin/xhprof-import-proxy --listen=":8080" --path="/xhprof.io/import" --xhProfIoUrl="http://localhost/xhprof.io/import.php"
-´´´
+```
 
