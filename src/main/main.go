@@ -8,12 +8,13 @@ import (
 	"sync"
 	"net/url"
 	"io/ioutil"
+	"strings"
 )
 
 var (
 	listen = flag.String("listen", ":80", "HTTP listen address.")
-	listenUrl = flag.String("url", "/xhprof.io/import", "Import endpoint.")
-	redirectUrl = flag.String("redirectUrl", "http://localhost/xhprof.io/import.php", "Url to import script.")
+	path = flag.String("path", "/xhprof.io/import", "Import endpoint.")
+	xhProfIoUrl = flag.String("xhProfIoUrl", "http://localhost/xhprof.io", "Url to xhprof.io installation.")
 )
 
 type importRequest struct {
@@ -47,7 +48,7 @@ func main() {
 	go importHandlerLoop(handle, wg)
 
 	// provide http endpoint
-	http.HandleFunc(*listenUrl, func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc(*path, func(w http.ResponseWriter, r *http.Request) {
 		importRequest, err := createImportRequest(r)
 		if err == nil {
 			handle.queue <- importRequest
@@ -88,7 +89,8 @@ func (this importHandle) consume(r importRequest, wg *sync.WaitGroup) {
 	values.Set("request_method", r.RequestMethod)
 	values.Set("request_uri", r.RequestUri)
 	values.Set("xhprof_data", r.XHProfData)
-	resp, err := http.PostForm(*redirectUrl, values)
+	url := []string{*xhProfIoUrl, "/import.php"};
+	resp, err := http.PostForm(strings.Join(url, ""), values)
 	if err != nil {
 		log.Printf("ERROR: %s", err)
 		return
