@@ -99,7 +99,7 @@ func (this importHandle) consume(r importRequest, wg *sync.WaitGroup) {
 	body, _ := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
 
-	log.Printf("%s", body)
+	log.Printf("%s with json data size %v bytes.", body, len(r.XHProfData))
 }
 
 
